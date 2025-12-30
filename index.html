@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>ShadowHub • Projets GitHub dynamiques</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-soft: #020818;
+      --panel: #020617;
+      --panel-border: #1f2937;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.2);
+      --accent2: #38bdf8;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-strong: 0 18px 45px rgba(0, 0, 0, 0.75);
+      --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.12), transparent 60%),
+        radial-gradient(circle at bottom right, rgba(56,189,248,0.16), transparent 60%),
+        var(--bg);
+      color: var(--text-main);
+      padding: 16px;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    /* HEADER / TOP BAR */
+
+    .shell {
+      border-radius: 26px;
+      border: 1px solid rgba(148,163,184,0.35);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), #020617);
+      box-shadow: var(--shadow-strong);
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(34,197,94,0.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(56,189,248,0.22), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .shell-inner {
+      position: relative;
+      z-index: 1;
+      border-radius: 18px;
+      border: 1px solid rgba(30,64,175,0.7);
+      background: linear-gradient(145deg, rgba(15,23,42,0.98), rgba(2,6,23,0.98));
+      padding: 16px;
+    }
+
+    .shell-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .traffic {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .traffic-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      opacity: 0.9;
+      box-shadow: 0 0 8px rgba(15,23,42,0.9);
+    }
+
+    .traffic-dot.red { background: #f97373; }
+    .traffic-dot.amber { background: #fbbf24; }
+    .traffic-dot.green { background: #22c55e; }
+
+    .session-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color: #cbd5f5;
+    }
+
+    .badge-live {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(34,197,94,0.7);
+      color: #bbf7d0;
+      background: rgba(22,163,74,0.15);
+    }
+
+    /* HERO TEXT + CONTROLS */
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.9fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .eyebrow-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(148,163,184,0.7), transparent);
+    }
+
+    .title {
+      font-size: 32px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .title span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 430px;
+      margin-bottom: 14px;
+    }
+
+    .meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .meta-tag {
+      font-size: 10px;
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.6);
+      color: #cbd5f5;
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.16), transparent 60%);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    /* CONTROLS PANEL */
+
+    .controls {
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(31,41,55,0.9);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), #020617);
+      padding: 10px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .controls-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .search-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .search-input-wrap {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 30px 8px 28px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(34,197,94,0.6);
+      background: #02091b;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .search-meta {
+      position: absolute;
+      right: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .select-row {
+      display: flex;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .select-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    select {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 11px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.16s ease, background 0.16s ease;
+    }
+
+    select:focus {
+      border-color: var(--accent2);
+      background: #02091b;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 10px;
+    }
+
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px dashed rgba(75,85,99,0.9);
+      color: #9ca3af;
+    }
+
+    .stats-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(34,197,94,0.8);
+      margin-right: 5px;
+      display: inline-block;
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.3; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* REPOS GRID */
+
+    .repos-panel {
+      margin-top: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31,41,55,0.97);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), #020617);
+      padding: 12px;
+    }
+
+    .repos-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .repos-header-title {
+      font-size: 13px;
+    }
+
+    .repos-header-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .view-mode {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .repos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .repo-card {
+      position: relative;
+      border-radius: 14px;
+      border: 1px solid rgba(31,41,55,0.95);
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.18), transparent 65%);
+      padding: 10px;
+      box-shadow: 0 12px 30px rgba(2,6,23,0.9);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .repo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(56,189,248,0.12), transparent);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+    }
+
+    .repo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.95);
+      border-color: rgba(34,197,94,0.9);
+      background: radial-gradient(circle at top left, rgba(34,197,94,0.25), transparent 60%);
+    }
+
+    .repo-card:hover::before {
+      opacity: 1;
+    }
+
+    .repo-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .repo-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e5e7eb;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .repo-lang {
+      font-size: 10px;
+      color: #cbd5f5;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      padding: 2px 7px;
+      background: rgba(15,23,42,0.85);
+      max-width: 90px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: right;
+    }
+
+    .repo-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      min-height: 28px;
+    }
+
+    .repo-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .meta-left, .meta-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-pill {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55,65,81,0.95);
+      background: rgba(15,23,42,0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .star {
+      color: #facc15;
+      font-size: 11px;
+    }
+
+    .eye {
+      color: #38bdf8;
+      font-size: 11px;
+    }
+
+    .clock {
+      color: #22c55e;
+      font-size: 11px;
+    }
+
+    .repo-date {
+      font-size: 10px;
+      color: #6b7280;
+    }
+
+    .repo-footer {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .repo-open {
+      color: var(--accent2);
+      font-size: 11px;
+    }
+
+    .repo-open span {
+      border-bottom: 1px dashed rgba(56,189,248,0.7);
+    }
+
+    .tag-recency {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 9px;
+      border: 1px solid rgba(34,197,94,0.7);
+      color: #bbf7d0;
+      background: rgba(22,163,74,0.18);
+    }
+
+    .empty-state {
+      font-size: 12px;
+      color: #9ca3af;
+      padding: 12px;
+      text-align: center;
+      border-radius: var(--radius-md);
+      border: 1px dashed rgba(55,65,81,0.9);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), #020617);
+      margin-top: 6px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .controls-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .shell-inner {
+        padding: 12px;
+      }
+      .title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="shell">
+    <div class="shell-inner">
+      <div class="shell-header">
+        <div class="traffic">
+          <div class="traffic-dot red"></div>
+          <div class="traffic-dot amber"></div>
+          <div class="traffic-dot green"></div>
+          <span class="session-label">session@hackerd_825:~</span>
+        </div>
+        <span class="badge-live">LIVE · données depuis GitHub</span>
+      </div>
+
+      <div class="hero">
+        <!-- LEFT: TEXT -->
+        <div>
+          <div class="eyebrow">
+            <span>profil public</span>
+            <div class="eyebrow-line"></div>
+          </div>
+          <h1 class="title">
+            Tous mes projets,<br><span>triés, filtrés, observables.</span>
+          </h1>
+          <p class="subtitle">
+            Vue en temps réel de mes dépôts publics GitHub. 
+            Tu peux chercher, trier par date, popularité, nom, et filtrer par langage.
+          </p>
+          <div class="meta-tags">
+            <span class="meta-tag">données GitHub en direct</span>
+            <span class="meta-tag">tri moderne & filtres</span>
+            <span class="meta-tag">interface sombre et durable</span>
+          </div>
+          <p class="hint">
+            <span class="pulse-dot"></span>
+            Les projets les plus récents apparaissent d’abord. Plus tu ajoutes de dépôts, plus cette page vit.
+          </p>
+        </div>
+
+        <!-- RIGHT: CONTROLS -->
+        <div class="controls">
+          <div class="controls-row">
+            <div class="search-group">
+              <span>Rechercher un projet</span>
+              <div class="search-input-wrap">
+                <span class="search-icon">⌕</span>
+                <input
+                  id="search"
+                  type="text"
+                  class="search-input"
+                  placeholder="Nom ou description…"
+                />
+                <span class="search-meta">live</span>
+              </div>
+            </div>
+            <div class="search-group">
+              <span>Options de tri</span>
+              <div class="select-row">
+                <div class="select-wrap">
+                  <label for="sort" style="font-size:10px;">Trier par</label>
+                  <select id="sort">
+                    <option value="recent">Plus récents</option>
+                    <option value="oldest">Plus anciens</option>
+                    <option value="name-az">Nom A → Z</option>
+                    <option value="name-za">Nom Z → A</option>
+                    <option value="stars-desc">Plus favoris (★)</option>
+                    <option value="stars-asc">Moins favoris (★)</option>
+                    <option value="watchers-desc">Plus vus (👁)</option>
+                    <option value="watchers-asc">Moins vus (👁)</option>
+                  </select>
+                </div>
+                <div class="select-wrap">
+                  <label for="language" style="font-size:10px;">Filtrer langage</label>
+                  <select id="language">
+                    <option value="all">Tous</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chips">
+            <span class="chip">★ = favoris (stars)</span>
+            <span class="chip">👁 = popularité / vues approximatives</span>
+            <span class="chip">Tri, recherche et filtres se combinent</span>
+          </div>
+
+          <div class="stats-line">
+            <span id="stats-summary">Chargement des dépôts…</span>
+            <span class="view-mode">mode: carte interactive</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPOS LIST -->
+      <div class="repos-panel">
+        <div class="repos-header">
+          <div>
+            <div class="repos-header-title">Projets publics GitHub</div>
+            <div class="repos-header-sub" id="repos-subtitle">
+              Récupération en cours…
+            </div>
+          </div>
+          <div class="view-mode">
+            clic = ouvrir sur GitHub · clic droit = nouvel onglet
+          </div>
+        </div>
+
+        <div class="repos-grid" id="repos"></div>
+        <div id="empty-state" class="empty-state" style="display:none;">
+          Aucun projet ne correspond à cette combinaison de recherche + tri + filtres.
+          Essaie d’effacer le champ de recherche ou de remettre les filtres à “Tous”.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const GITHUB_USER = "Hackerd-825";
+
+  const state = {
+    repos: [],
+    filtered: [],
+    search: "",
+    sort: "recent",
+    language: "all",
+  };
+
+  const reposContainer = document.getElementById("repos");
+  const emptyState = document.getElementById("empty-state");
+  const searchInput = document.getElementById("search");
+  const sortSelect = document.getElementById("sort");
+  const langSelect = document.getElementById("language");
+  const statsSummary = document.getElementById("stats-summary");
+  const reposSubtitle = document.getElementById("repos-subtitle");
+
+  async function fetchRepos() {
+    statsSummary.textContent = "Récupération des dépôts publics depuis GitHub…";
+    reposSubtitle.textContent = "Connexion à l’API GitHub…";
+
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`
+      );
+      const data = await res.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Réponse inattendue de GitHub");
+      }
+
+      state.repos = data;
+      buildLanguages();
+      applyFilters();
+
+      const total = state.repos.length;
+      reposSubtitle.textContent = total === 0
+        ? "Aucun dépôt public trouvé pour ce compte."
+        : `${total} dépôt${total > 1 ? "s" : ""} public${total > 1 ? "s" : ""} trouvés sur GitHub.`;
+
+    } catch (e) {
+      console.error(e);
+      statsSummary.textContent = "Erreur lors du chargement des dépôts GitHub.";
+      reposSubtitle.textContent = "Impossible de récupérer les données. Essaie de recharger la page.";
+    }
+  }
+
+  function buildLanguages() {
+    const langs = new Set();
+    state.repos.forEach(r => {
+      if (r.language) langs.add(r.language);
+    });
+
+    langSelect.innerHTML = '<option value="all">Tous</option>';
+    Array.from(langs).sort().forEach(lang => {
+      const opt = document.createElement("option");
+      opt.value = lang;
+      opt.textContent = lang;
+      langSelect.appendChild(opt);
+    });
+  }
+
+  function applyFilters() {
+    const search = state.search.toLowerCase();
+    let result = state.repos.slice();
+
+    // search
+    if (search) {
+      result = result.filter(r => {
+        const name = (r.name || "").toLowerCase();
+        const desc = (r.description || "").toLowerCase();
+        return name.includes(search) || desc.includes(search);
+      });
+    }
+
+    // language
+    if (state.language !== "all") {
+      result = result.filter(r => r.language === state.language);
+    }
+
+    // sort
+    result.sort((a, b) => {
+      switch (state.sort) {
+        case "recent":
+          return new Date(b.pushed_at) - new Date(a.pushed_at);
+        case "oldest":
+          return new Date(a.pushed_at) - new Date(b.pushed_at);
+        case "name-az":
+          return a.name.localeCompare(b.name);
+        case "name-za":
+          return b.name.localeCompare(a.name);
+        case "stars-desc":
+          return (b.stargazers_count || 0) - (a.stargazers_count || 0);
+        case "stars-asc":
+          return (a.stargazers_count || 0) - (b.stargazers_count || 0);
+        case "watchers-desc":
+          return (b.watchers_count || 0) - (a.watchers_count || 0);
+        case "watchers-asc":
+          return (a.watchers_count || 0) - (b.watchers_count || 0);
+        default:
+          return 0;
+      }
+    });
+
+    state.filtered = result;
+    renderRepos();
+    updateStats();
+  }
+
+  function updateStats() {
+    const total = state.repos.length;
+    const visible = state.filtered.length;
+    if (total === 0) {
+      statsSummary.textContent = "Aucun dépôt public disponible sur ce compte pour l’instant.";
+      return;
+    }
+
+    if (!state.search && state.language === "all") {
+      statsSummary.textContent = `${visible}/${total} projet${total > 1 ? "s" : ""} visibles (liste complète).`;
+    } else {
+      statsSummary.textContent = `${visible}/${total} projet${total > 1 ? "s" : ""} après recherche & filtres.`;
+    }
+  }
+
+  function formatDate(iso) {
+    if (!iso) return "date inconnue";
+    const d = new Date(iso);
+    return d.toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit"
+    });
+  }
+
+  function isRecent(iso) {
+    if (!iso) return false;
+    const d = new Date(iso);
+    const now = new Date();
+    const diff = now - d;
+    const days = diff / (1000 * 60 * 60 * 24);
+    return days <= 14; // 2 semaines = projet récent
+  }
+
+  function renderRepos() {
+    reposContainer.innerHTML = "";
+
+    if (state.filtered.length === 0) {
+      emptyState.style.display = "block";
+      return;
+    } else {
+      emptyState.style.display = "none";
+    }
+
+    state.filtered.forEach(repo => {
+      const card = document.createElement("article");
+      card.className = "repo-card";
+
+      const stars = repo.stargazers_count || 0;
+      const watchers = repo.watchers_count || 0;
+      const isFork = repo.fork;
+      const updated = repo.pushed_at || repo.updated_at;
+
+      card.innerHTML = `
+        <div class="repo-top">
+          <div class="repo-name" title="${repo.name}">${repo.name}</div>
+          <div class="repo-lang">${repo.language || "Langage inconnu"}</div>
+        </div>
+        <p class="repo-desc">${repo.description || "Aucune description pour ce dépôt."}</p>
+        <div class="repo-meta-row">
+          <div class="meta-left">
+            <span class="meta-pill"><span class="star">★</span>${stars}</span>
+            <span class="meta-pill"><span class="eye">👁</span>${watchers}</span>
+            ${isFork ? '<span class="meta-pill">fork</span>' : ""}
+          </div>
+          <div class="meta-right">
+            <span class="meta-pill">
+              <span class="clock">⏱</span>
+              <span class="repo-date">${formatDate(updated)}</span>
+            </span>
+          </div>
+        </div>
+        <div class="repo-footer">
+          <span class="repo-open"><span>ouvrir sur GitHub ↗</span></span>
+          ${isRecent(updated) ? '<span class="tag-recency">nouveau / récemment mis à jour</span>' : ""}
+        </div>
+      `;
+
+      // clic gauche : ouvrir
+      card.addEventListener("click", () => {
+        window.open(repo.html_url, "_blank");
+      });
+
+      // clic droit : nouvel onglet
+      card.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        window.open(repo.html_url, "_blank");
+      });
+
+      reposContainer.appendChild(card);
+    });
+  }
+
+  searchInput.addEventListener("input", (e) => {
+    state.search = e.target.value;
+    applyFilters();
+  });
+
+  sortSelect.addEventListener("change", (e) => {
+    state.sort = e.target.value;
+    applyFilters();
+  });
+
+  langSelect.addEventListener("change", (e) => {
+    state.language = e.target.value;
+    applyFilters();
+  });
+
+  fetchRepos();
+</script>
+</body>
+</html>
