@@ -5,6 +5,26 @@
   <title>ShadowHub • Projets GitHub dynamiques</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* --- STYLE DE TON ANIMATION (ANIM.HTML) --- */
+    #boot-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      color: #00ff9d;
+      font-family: monospace;
+      padding: 20px;
+      z-index: 9999;
+      overflow-y: auto;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    #terminal-boot {
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
+
+    /* --- STYLE DE TON SITE (INDEX.HTML) --- */
     :root {
       --bg: #020617;
       --bg-soft: #020818;
@@ -44,8 +64,6 @@
       max-width: 1120px;
       margin: 0 auto;
     }
-
-    /* HEADER / TOP BAR */
 
     .shell {
       border-radius: 26px;
@@ -118,8 +136,6 @@
       background: rgba(22,163,74,0.15);
     }
 
-    /* HERO TEXT + CONTROLS */
-
     .hero {
       display: grid;
       grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.9fr);
@@ -183,8 +199,6 @@
       font-size: 11px;
       color: #6b7280;
     }
-
-    /* CONTROLS PANEL */
 
     .controls {
       border-radius: var(--radius-md);
@@ -321,8 +335,6 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
-    /* REPOS GRID */
-
     .repos-panel {
       margin-top: 16px;
       border-radius: var(--radius-lg);
@@ -454,25 +466,11 @@
       gap: 3px;
     }
 
-    .star {
-      color: #facc15;
-      font-size: 11px;
-    }
+    .star { color: #facc15; font-size: 11px; }
+    .eye { color: #38bdf8; font-size: 11px; }
+    .clock { color: #22c55e; font-size: 11px; }
 
-    .eye {
-      color: #38bdf8;
-      font-size: 11px;
-    }
-
-    .clock {
-      color: #22c55e;
-      font-size: 11px;
-    }
-
-    .repo-date {
-      font-size: 10px;
-      color: #6b7280;
-    }
+    .repo-date { font-size: 10px; color: #6b7280; }
 
     .repo-footer {
       margin-top: 6px;
@@ -483,14 +481,8 @@
       color: #64748b;
     }
 
-    .repo-open {
-      color: var(--accent2);
-      font-size: 11px;
-    }
-
-    .repo-open span {
-      border-bottom: 1px dashed rgba(56,189,248,0.7);
-    }
+    .repo-open { color: var(--accent2); font-size: 11px; }
+    .repo-open span { border-bottom: 1px dashed rgba(56,189,248,0.7); }
 
     .tag-recency {
       padding: 2px 7px;
@@ -512,31 +504,25 @@
       margin-top: 6px;
     }
 
-    /* RESPONSIVE */
-
     @media (max-width: 900px) {
-      .hero {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .controls-row {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      .hero { grid-template-columns: minmax(0, 1fr); }
+      .controls-row { grid-template-columns: minmax(0, 1fr); }
     }
 
     @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
-      .shell-inner {
-        padding: 12px;
-      }
-      .title {
-        font-size: 24px;
-      }
+      body { padding: 10px; }
+      .shell-inner { padding: 12px; }
+      .title { font-size: 24px; }
     }
   </style>
 </head>
 <body>
+
+<div id="boot-screen">
+  <div id="terminal-boot"></div>
+</div>
+
+<div id="app" style="display: none;">
 <main>
   <section class="shell">
     <div class="shell-inner">
@@ -551,7 +537,6 @@
       </div>
 
       <div class="hero">
-        <!-- LEFT: TEXT -->
         <div>
           <div class="eyebrow">
             <span>profil public</span>
@@ -575,19 +560,13 @@
           </p>
         </div>
 
-        <!-- RIGHT: CONTROLS -->
         <div class="controls">
           <div class="controls-row">
             <div class="search-group">
               <span>Rechercher un projet</span>
               <div class="search-input-wrap">
                 <span class="search-icon">⌕</span>
-                <input
-                  id="search"
-                  type="text"
-                  class="search-input"
-                  placeholder="Nom ou description…"
-                />
+                <input id="search" type="text" class="search-input" placeholder="Nom ou description…" />
                 <span class="search-meta">live</span>
               </div>
             </div>
@@ -630,40 +609,57 @@
         </div>
       </div>
 
-      <!-- REPOS LIST -->
       <div class="repos-panel">
         <div class="repos-header">
           <div>
             <div class="repos-header-title">Projets publics GitHub</div>
-            <div class="repos-header-sub" id="repos-subtitle">
-              Récupération en cours…
-            </div>
+            <div class="repos-header-sub" id="repos-subtitle">Récupération en cours…</div>
           </div>
-          <div class="view-mode">
-            clic = ouvrir sur GitHub · clic droit = nouvel onglet
-          </div>
+          <div class="view-mode">clic = ouvrir sur GitHub · clic droit = nouvel onglet</div>
         </div>
-
         <div class="repos-grid" id="repos"></div>
-        <div id="empty-state" class="empty-state" style="display:none;">
-          Aucun projet ne correspond à cette combinaison de recherche + tri + filtres.
-          Essaie d’effacer le champ de recherche ou de remettre les filtres à “Tous”.
-        </div>
+        <div id="empty-state" class="empty-state" style="display:none;">Aucun projet trouvé.</div>
       </div>
     </div>
   </section>
 </main>
+</div>
+
+<script>
+  const terminal = document.getElementById("terminal-boot");
+  const bootScreen = document.getElementById("boot-screen");
+  const app = document.getElementById("app");
+
+  const coolLines = ["alignement des structures","triangulation des vecteurs","synchronisation des processus","calibration des registres","optimisation des threads","cryptage des segments","vectorisation des matrices","stabilisation du noyau","analyse heuristique","préparation des modules graphiques","tri des métadonnées","optimisation des index","analyse des flux","activation des protocoles","préparation du cache","initialisation des pipelines","vérification des signatures","allocation mémoire","montage des partitions virtuelles","scan des interfaces","chargement des librairies","analyse des dépendances","préparation des sockets","synchronisation des horloges","chargement des configurations","stabilisation des matrices","triangulation avancée","alignement vectoriel","optimisation du moteur","ouverture du port 8080"];
+  const normalLines = ["initialisation du noyau","chargement des modules","préparation du système","lecture des paramètres","vérification du système","analyse du matériel","chargement des pilotes","initialisation des services","connexion aux interfaces","analyse du réseau","préparation des variables","vérification des ports","analyse du cache","préparation des threads","chargement des tables","vérification des chemins","analyse des processus","chargement des extensions","vérification des modules","analyse des logs","préparation des buffers","chargement des registres","analyse des signaux","préparation des tâches","chargement des structures","vérification des dépendances","analyse des threads","préparation des segments","chargement des blocs","vérification des index","analyse des partitions","préparation des flux","chargement des données","vérification des clés","analyse des tables","préparation des matrices","chargement des paramètres système","vérification des sockets","analyse des pipelines","préparation des modules internes","chargement des interfaces système","vérification des registres internes","analyse des buffers mémoire","préparation des signaux système","chargement des flux internes","vérification des structures système","analyse des segments mémoire","préparation des index système","chargement des partitions virtuelles","vérification des matrices internes","analyse des données système","préparation des tables internes","chargement des flux système","vérification des threads internes","analyse des modules internes","préparation des registres système","chargement des buffers internes","vérification des flux internes","analyse des interfaces internes","préparation des partitions internes","chargement des signaux internes","vérification des paramètres internes","analyse des configurations système","préparation des dépendances internes","connexion à GitHub API","analyse des dépôts","préparation de l'interface","synchronisation finale","optimisation finale"];
+
+  const commands = [...coolLines, ...normalLines].sort(() => Math.random() - 0.5);
+
+  async function bootSequence() {
+    const delayPerLine = 50;
+    for (let cmd of commands) {
+      terminal.innerHTML += ">>> " + cmd + "\n";
+      bootScreen.scrollTop = bootScreen.scrollHeight;
+      await new Promise(r => setTimeout(r, delayPerLine));
+    }
+    terminal.innerHTML += ">>> lancement de shadowhub\n";
+    bootScreen.scrollTop = bootScreen.scrollHeight;
+    await new Promise(r => setTimeout(r, 1000));
+
+    bootScreen.style.opacity = 0;
+    setTimeout(() => {
+      bootScreen.style.display = "none";
+      app.style.display = "block"; // Affiche ton site
+      fetchRepos(); // Déclenche ton script GitHub
+    }, 500);
+  }
+
+  bootSequence();
+</script>
 
 <script>
   const GITHUB_USER = "Hackerd-825";
-
-  const state = {
-    repos: [],
-    filtered: [],
-    search: "",
-    sort: "recent",
-    language: "all",
-  };
+  const state = { repos: [], filtered: [], search: "", sort: "recent", language: "all" };
 
   const reposContainer = document.getElementById("repos");
   const emptyState = document.getElementById("empty-state");
@@ -676,44 +672,25 @@
   async function fetchRepos() {
     statsSummary.textContent = "Récupération des dépôts publics depuis GitHub…";
     reposSubtitle.textContent = "Connexion à l’API GitHub…";
-
     try {
-      const res = await fetch(
-        `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`
-      );
+      const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=updated`);
       const data = await res.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error("Réponse inattendue de GitHub");
-      }
-
       state.repos = data;
       buildLanguages();
       applyFilters();
-
-      const total = state.repos.length;
-      reposSubtitle.textContent = total === 0
-        ? "Aucun dépôt public trouvé pour ce compte."
-        : `${total} dépôt${total > 1 ? "s" : ""} public${total > 1 ? "s" : ""} trouvés sur GitHub.`;
-
+      reposSubtitle.textContent = `${state.repos.length} dépôts trouvés sur GitHub.`;
     } catch (e) {
-      console.error(e);
       statsSummary.textContent = "Erreur lors du chargement des dépôts GitHub.";
-      reposSubtitle.textContent = "Impossible de récupérer les données. Essaie de recharger la page.";
     }
   }
 
   function buildLanguages() {
     const langs = new Set();
-    state.repos.forEach(r => {
-      if (r.language) langs.add(r.language);
-    });
-
+    state.repos.forEach(r => { if (r.language) langs.add(r.language); });
     langSelect.innerHTML = '<option value="all">Tous</option>';
     Array.from(langs).sort().forEach(lang => {
       const opt = document.createElement("option");
-      opt.value = lang;
-      opt.textContent = lang;
+      opt.value = lang; opt.textContent = lang;
       langSelect.appendChild(opt);
     });
   }
@@ -721,45 +698,21 @@
   function applyFilters() {
     const search = state.search.toLowerCase();
     let result = state.repos.slice();
-
-    // search
-    if (search) {
-      result = result.filter(r => {
-        const name = (r.name || "").toLowerCase();
-        const desc = (r.description || "").toLowerCase();
-        return name.includes(search) || desc.includes(search);
-      });
-    }
-
-    // language
-    if (state.language !== "all") {
-      result = result.filter(r => r.language === state.language);
-    }
-
-    // sort
+    if (search) { result = result.filter(r => (r.name || "").toLowerCase().includes(search) || (r.description || "").toLowerCase().includes(search)); }
+    if (state.language !== "all") { result = result.filter(r => r.language === state.language); }
     result.sort((a, b) => {
       switch (state.sort) {
-        case "recent":
-          return new Date(b.pushed_at) - new Date(a.pushed_at);
-        case "oldest":
-          return new Date(a.pushed_at) - new Date(b.pushed_at);
-        case "name-az":
-          return a.name.localeCompare(b.name);
-        case "name-za":
-          return b.name.localeCompare(a.name);
-        case "stars-desc":
-          return (b.stargazers_count || 0) - (a.stargazers_count || 0);
-        case "stars-asc":
-          return (a.stargazers_count || 0) - (b.stargazers_count || 0);
-        case "watchers-desc":
-          return (b.watchers_count || 0) - (a.watchers_count || 0);
-        case "watchers-asc":
-          return (a.watchers_count || 0) - (b.watchers_count || 0);
-        default:
-          return 0;
+        case "recent": return new Date(b.pushed_at) - new Date(a.pushed_at);
+        case "oldest": return new Date(a.pushed_at) - new Date(b.pushed_at);
+        case "name-az": return a.name.localeCompare(b.name);
+        case "name-za": return b.name.localeCompare(a.name);
+        case "stars-desc": return (b.stargazers_count || 0) - (a.stargazers_count || 0);
+        case "stars-asc": return (a.stargazers_count || 0) - (b.stargazers_count || 0);
+        case "watchers-desc": return (b.watchers_count || 0) - (a.watchers_count || 0);
+        case "watchers-asc": return (a.watchers_count || 0) - (b.watchers_count || 0);
+        default: return 0;
       }
     });
-
     state.filtered = result;
     renderRepos();
     updateStats();
@@ -768,112 +721,54 @@
   function updateStats() {
     const total = state.repos.length;
     const visible = state.filtered.length;
-    if (total === 0) {
-      statsSummary.textContent = "Aucun dépôt public disponible sur ce compte pour l’instant.";
-      return;
-    }
-
-    if (!state.search && state.language === "all") {
-      statsSummary.textContent = `${visible}/${total} projet${total > 1 ? "s" : ""} visibles (liste complète).`;
-    } else {
-      statsSummary.textContent = `${visible}/${total} projet${total > 1 ? "s" : ""} après recherche & filtres.`;
-    }
+    statsSummary.textContent = `${visible}/${total} projets visibles.`;
   }
 
   function formatDate(iso) {
     if (!iso) return "date inconnue";
     const d = new Date(iso);
-    return d.toLocaleDateString("fr-FR", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit"
-    });
+    return d.toLocaleDateString("fr-FR", { year: "numeric", month: "short", day: "2-digit" });
   }
 
   function isRecent(iso) {
-    if (!iso) return false;
     const d = new Date(iso);
-    const now = new Date();
-    const diff = now - d;
-    const days = diff / (1000 * 60 * 60 * 24);
-    return days <= 14; // 2 semaines = projet récent
+    const days = (new Date() - d) / (1000 * 60 * 60 * 24);
+    return days <= 14;
   }
 
   function renderRepos() {
     reposContainer.innerHTML = "";
-
-    if (state.filtered.length === 0) {
-      emptyState.style.display = "block";
-      return;
-    } else {
-      emptyState.style.display = "none";
-    }
+    if (state.filtered.length === 0) { emptyState.style.display = "block"; return; }
+    emptyState.style.display = "none";
 
     state.filtered.forEach(repo => {
       const card = document.createElement("article");
       card.className = "repo-card";
-
-      const stars = repo.stargazers_count || 0;
-      const watchers = repo.watchers_count || 0;
-      const isFork = repo.fork;
       const updated = repo.pushed_at || repo.updated_at;
-
       card.innerHTML = `
-        <div class="repo-top">
-          <div class="repo-name" title="${repo.name}">${repo.name}</div>
-          <div class="repo-lang">${repo.language || "Langage inconnu"}</div>
-        </div>
-        <p class="repo-desc">${repo.description || "Aucune description pour ce dépôt."}</p>
+        <div class="repo-top"><div class="repo-name">${repo.name}</div><div class="repo-lang">${repo.language || "N/A"}</div></div>
+        <p class="repo-desc">${repo.description || ""}</p>
         <div class="repo-meta-row">
           <div class="meta-left">
-            <span class="meta-pill"><span class="star">★</span>${stars}</span>
-            <span class="meta-pill"><span class="eye">👁</span>${watchers}</span>
-            ${isFork ? '<span class="meta-pill">fork</span>' : ""}
+            <span class="meta-pill"><span class="star">★</span>${repo.stargazers_count || 0}</span>
+            <span class="meta-pill"><span class="eye">👁</span>${repo.watchers_count || 0}</span>
           </div>
-          <div class="meta-right">
-            <span class="meta-pill">
-              <span class="clock">⏱</span>
-              <span class="repo-date">${formatDate(updated)}</span>
-            </span>
-          </div>
+          <div class="meta-right"><span class="meta-pill"><span class="clock">⏱</span>${formatDate(updated)}</span></div>
         </div>
         <div class="repo-footer">
           <span class="repo-open"><span>ouvrir sur GitHub ↗</span></span>
-          ${isRecent(updated) ? '<span class="tag-recency">nouveau / récemment mis à jour</span>' : ""}
+          ${isRecent(updated) ? '<span class="tag-recency">nouveau</span>' : ""}
         </div>
       `;
-
-      // clic gauche : ouvrir
-      card.addEventListener("click", () => {
-        window.open(repo.html_url, "_blank");
-      });
-
-      // clic droit : nouvel onglet
-      card.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-        window.open(repo.html_url, "_blank");
-      });
-
+      card.addEventListener("click", () => window.open(repo.html_url, "_blank"));
       reposContainer.appendChild(card);
     });
   }
 
-  searchInput.addEventListener("input", (e) => {
-    state.search = e.target.value;
-    applyFilters();
-  });
-
-  sortSelect.addEventListener("change", (e) => {
-    state.sort = e.target.value;
-    applyFilters();
-  });
-
-  langSelect.addEventListener("change", (e) => {
-    state.language = e.target.value;
-    applyFilters();
-  });
-
-  fetchRepos();
+  searchInput.addEventListener("input", (e) => { state.search = e.target.value; applyFilters(); });
+  sortSelect.addEventListener("change", (e) => { state.sort = e.target.value; applyFilters(); });
+  langSelect.addEventListener("change", (e) => { state.language = e.target.value; applyFilters(); });
 </script>
+
 </body>
 </html>
