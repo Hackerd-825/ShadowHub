@@ -615,7 +615,7 @@
             <div class="repos-header-title">Projets publics GitHub</div>
             <div class="repos-header-sub" id="repos-subtitle">Récupération en cours…</div>
           </div>
-          <div class="view-mode">clic = ouvrir sur GitHub · clic droit = nouvel onglet</div>
+          <div class="view-mode">clic = GitHub · clic droit = Site internet</div>
         </div>
         <div class="repos-grid" id="repos"></div>
         <div id="empty-state" class="empty-state" style="display:none;">Aucun projet trouvé.</div>
@@ -745,8 +745,15 @@
       const card = document.createElement("article");
       card.className = "repo-card";
       const updated = repo.pushed_at || repo.updated_at;
+      
+      // Vérification si un site web (homepage) est renseigné sur GitHub
+      const hasWebsite = repo.homepage && repo.homepage.trim() !== "";
+
       card.innerHTML = `
-        <div class="repo-top"><div class="repo-name">${repo.name}</div><div class="repo-lang">${repo.language || "N/A"}</div></div>
+        <div class="repo-top">
+            <div class="repo-name">${repo.name}</div>
+            <div class="repo-lang">${repo.language || "N/A"}</div>
+        </div>
         <p class="repo-desc">${repo.description || ""}</p>
         <div class="repo-meta-row">
           <div class="meta-left">
@@ -756,11 +763,24 @@
           <div class="meta-right"><span class="meta-pill"><span class="clock">⏱</span>${formatDate(updated)}</span></div>
         </div>
         <div class="repo-footer">
-          <span class="repo-open"><span>ouvrir sur GitHub ↗</span></span>
+          <span class="repo-open">
+            <span>${hasWebsite ? 'Clic droit: Site internet 🌐 | Clic gauche: Code' : 'ouvrir sur GitHub ↗'}</span>
+          </span>
           ${isRecent(updated) ? '<span class="tag-recency">nouveau</span>' : ""}
         </div>
       `;
+      
+      // CLIC GAUCHE : Ouvrir le code source sur GitHub
       card.addEventListener("click", () => window.open(repo.html_url, "_blank"));
+
+      // CLIC DROIT : Ouvrir le site web (homepage) si il existe
+      card.addEventListener("contextmenu", (e) => {
+          if (hasWebsite) {
+              e.preventDefault(); // Empêche le menu contextuel du navigateur
+              window.open(repo.homepage, "_blank");
+          }
+      });
+
       reposContainer.appendChild(card);
     });
   }
